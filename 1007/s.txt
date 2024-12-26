@@ -1,0 +1,174 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_COL 100
+#define MAX_STACK_SIZE 100
+#define TRUE 1
+#define FALSE 0
+
+typedef struct {
+    short int row;
+    short int col;
+} element;
+
+element stack[MAX_STACK_SIZE];
+int top = -1;
+int maze[MAX_COL][MAX_COL];
+element pathStack[MAX_STACK_SIZE];
+int pathTop = -1;
+
+void readMaze(int *row, int *col);
+void push(element val);
+element pop();
+int isEmpty();
+void path(int numRow, int numCol);
+void printMaze(int numRow, int numCol);
+
+int main() {
+    int row, col;
+    readMaze(&row, &col);
+    path(row, col);
+    return 0;
+}
+
+void readMaze(int *row, int *col) {
+    FILE *file;
+    if ((file = fopen("in.txt", "r")) == NULL) {
+        printf("파일을 열 수 없습니다.\n");
+        exit(1);
+    }
+    fscanf(file, "%d %d", row, col);
+
+    for (int i = 0; i < *row; i++) {
+        for (int j = 0; j < *col; j++) {
+            fscanf(file, "%d", &maze[i][j]);
+        }
+    }
+    fclose(file);
+}
+
+void push(element val) {
+    if (top >= MAX_STACK_SIZE - 1) {
+        printf("스택 오버플로우 발생\n");
+        exit(1);
+    }
+    stack[++top] = val;
+}
+
+int isEmpty() {
+    return top < 0;
+}
+
+element pop() {
+    if (isEmpty()) {
+        printf("스택 언더플로우 발생\n");
+        exit(1);
+    }
+    return stack[top--];
+}
+
+void path(int numRow, int numCol) {
+    int row, col, nextRow, nextCol, found = FALSE;
+    int directions[4][2] = {
+        {-1, 0}, {0, 1}, {1, 0}, {0, -1}  // 상, 우, 하, 좌
+    };
+    element position;
+    int entRow, entCol, exitRow, exitCol;
+
+    // 시작점과 종료점 입력
+    printf("입력 (종료 행, 종료 열, 시작 행, 시작 열): ");
+    scanf("%d %d %d %d", &exitRow, &exitCol, &entRow, &entCol);
+
+    position.row = entRow - 1; // 0 기반 인덱스
+    position.col = entCol - 1; // 0 기반 인덱스
+    push(position);
+    maze[position.row][position.col] = 2; // 경로 표시
+
+    pathStack[++pathTop] = position;
+
+    while (!(isEmpty()) && !found) {
+        position = pop();
+        row = position.row;
+        col = position.col;
+
+        if (row == exitRow - 1 && col == exitCol - 1) {
+            found = TRUE;
+            break;
+        }
+
+        for (int dir = 0; dir < 4 && !found; dir++) {
+            nextRow = row + directions[dir][0];
+            nextCol = col + directions[dir][1];
+            if (nextRow >= 0 && nextRow < numRow && nextCol >= 0 && nextCol < numCol && maze[nextRow][nextCol] == 0) {
+                maze[nextRow][nextCol] = 2; // 경로 표시
+                push((element){nextRow, nextCol});
+                pathStack[++pathTop] = (element){nextRow, nextCol};
+            }
+        }
+    }
+
+    if (found) {
+        // 경로를 x로 표시
+        for (int i = 0; i <= pathTop; i++) {
+            maze[pathStack[i].row][pathStack[i].col] = 3; // x로 표시
+        }
+    } else {
+        printf("미로에 경로가 없습니다.\n");
+    }
+
+    printMaze(numRow, numCol);
+}
+
+void printMaze(int numRow, int numCol) {
+    printf("최종 미로:\n");
+    for (int i = 0; i < numRow; i++) {
+        for (int j = 0; j < numCol; j++) {
+            if (maze[i][j] == 3) {
+                printf("x ");
+            } else {
+                printf("%d ", maze[i][j]);
+            }
+        }
+        printf("\n");
+    }
+
+    // 결과를 out.txt 파일에 저장
+    FILE *outFile = fopen("out.txt", "w");
+    if (outFile == NULL) {
+        printf("out.txt 파일을 열 수 없습니다.\n");
+        exit(1);
+    }
+
+    for (int i = 0; i < numRow; i++) {
+        for (int j = 0; j < numCol; j++) {
+            if (maze[i][j] == 3) {
+                fprintf(outFile, "x ");
+            } else {
+                fprintf(outFile, "%d ", maze[i][j]);
+            }
+        }
+        fprintf(outFile, "\n");
+    }
+
+    fclose(outFile);
+}
+
+entrance와 exit는 scanf를 이용해서 입력 받는다.
+maze알고리즘을 수행하여 경로에 해당하는 행과 열을 'x'로 표시하여 maze와 경로를 함께 출력한다.
+in.txt
+5 5
+1 1 1 1 1
+1 0 0 0 0
+1 0 0 1 1
+1 1 0 0 1
+1 1 0 1 1
+
+out.txt
+1 1 1 1 1
+1 0 x x x
+1 0 x 1 1
+1 1 x 0 1
+1 1 x 1 1
+처럼 나오도록 코드가 짜져야 해.
+하지만 내 코드는 많이 부실하니까 이 조건들에 맞게 수정해줘.
+

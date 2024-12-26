@@ -1,0 +1,70 @@
+input이 ("in21.txt") 
+6/2-3+4*2
+면 출력값이
+6 2 / 3 - 4 2 * +
+8
+처럼 나와야해.
+즉 중위 표기법이 후위 표기법으로 변경되어야하지.
+그리고 뒤에 8은 잘 모르겠어.
+다른 예시도 보여줄게
+("in22.txt")
+((1*2)+1-2)*(3%2)
+가 입력값이라면 출력값이,
+1 2 * 1 + 2 - 3 2 % *
+1
+로 나와야해.
+이렇게 나오도록 코드를 처음부터 다시 짜줄 수 있어?
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef enum { 
+    lparen, rparen, plus, minus, times, divide, mod, eos, operand 
+} precedence;
+
+int val();
+precedence getToken(char *symbol, int *n);
+
+int main() {
+    val();
+
+}
+
+int val(void) {
+    precedence token;
+    char symbol;
+    int n = 0;
+    int top = -1;
+    token = getToken(&symbol, &n);
+    while(token != eos) {
+        if (token == operand) push(symbol - '0');
+        else {
+            op2 = pop(); op1 = pop();
+            switch(token) {
+                case plus: push(op1+op2); break;
+                case minus: push(op1-op2); break;
+                case times: push(op1*op2); break;
+                case divide: push(op1/op2); break;
+                case mod: push(op1%op2);
+            }
+        }
+        token = getToken(&symbol, &n);
+    }
+    return pop();
+}
+
+precedence getToken(char *symbol, int *n) {
+    *symbol = exre[(*n)++];
+
+    switch (*symbol) {
+        case '(': return lparen;
+        case ')': return rparen;
+        case '+': return plus;
+        case '-': return minus;
+        case '/': return divide;
+        case '*': return times;
+        case '%': return mod;
+        case '\0': return eos;
+        default: return operand;
+    }
+}

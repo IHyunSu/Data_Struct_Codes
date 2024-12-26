@@ -1,0 +1,9 @@
+10 20 30 40 50
+
+k = 20
+
+left = 0
+right = n
+
+middle = (left + right) / 2
+

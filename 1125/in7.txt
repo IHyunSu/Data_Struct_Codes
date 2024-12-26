@@ -1,0 +1,27 @@
+5    3   1   2   -1  0   -7  7   5 
+[0] [1] [2] [3] [4] [5] [6] [7] [8]
+L                m               R    dvide 0
+L        m       R   L   m       R          1
+L    m   R   L   m   R   L   m   R          3
+L(m) R,L R,L R,L R,L R,L R,L R,L R          8
+            -> L >= R TRUE -> return left
+                        뜻 : left를 넘김으로서 전체를 넘겨준다.
+
+left = 0; right = n(= 8)
+mid = 4
+
+divide = 1 : 
+    start1 = 0, 5 // start2 = 4, 8
+        last1 = start1, last2 = start2
+
+    lastResult = 0
+               = 4
+               = 5
+
+link :
+ 
+[0] [1] [2] [3] [4] [5] [6] [7] [8]
+
+-1                   -1
+0                    0
+               

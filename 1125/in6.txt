@@ -1,0 +1,42 @@
+left = 1
+right = n
+
+if (left >= right) return left
+-> left와 right가 같아지거나 left가 클 때는 즉,
+    리스트가 하나하나씩 나눠졌다는 의미
+
+int mid = (left+right)/2;
+
+return listMerge(a, link, rmergeSort(a, link, left, mid),
+                          rmergeSort(a, link, mid+1, right))
+
+-> recursive mergeSort 
+계속해서 반쪽으로 나눈 것을 listMerge에 넘겨준다.
+a와 link와 같이
+
+listMerge(a, link, start1, start2) 
+            // 왼쪽으로 나누어진 시작점, 오른쪽으로 나누어진 시작점
+
+last1, last2, lastResult = 0 // 마지막 결과값 0
+
+link  0  0  0  0  0  0  0  0  0  0  0
+a     0  26 5  77 1  61 11 59 15 48 19
+// 
+
+for (last1 = start1, last2 = start2; last1 && last2;)
+-> last1 그리고 last2까지 반복
+    if (a[last1] <= a[last2]) {
+        link[lastResult] = last1;
+        lastResult = last1; last1 = link[last1];
+    }
+    else {
+        link[lastResult] = last2;
+        lastResult = last2; last2 = link[last2];
+    }
+    -> 작은 값의 인덱스를 lastResult로 둔다.
+
+if(last1 == 0) link[lastResult] = last2;
+else           link[lastResult] = last1;
+return link[0];
+
+-> 작은 값의 인덱스를 넘겨준다.
